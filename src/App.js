@@ -27,9 +27,18 @@ class App extends Component {
     this.state = {
       list: list
     };
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+  onDismiss(id) {
+    const isNotId = function isNotId(item) {
+      return item.objectID !== id;
+    };
+
+    const updatedList = this.state.list.filter(isNotId);
+
+    this.setState({ list: updatedList });
   }
   render() {
-    const helloWorld = "Welcome to the Road to learn React";
     return (
       <div className="App">
         {this.state.list.map(item => (
@@ -40,6 +49,14 @@ class App extends Component {
             <span>{item.author}</span>
             <span>{item.num_comments}</span>
             <span>{item.points}</span>
+            <span>
+              <button
+                onClick={() => this.onDismiss(item.objectID)}
+                type="button"
+              >
+                Dismiss
+              </button>
+            </span>
           </div>
         ))}
       </div>
