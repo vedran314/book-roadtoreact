@@ -18,16 +18,40 @@ const list = [
     num_comments: 2,
     points: 5,
     objectID: 1
+  },
+  {
+    title: "Angular",
+    url: "https://github.com/angular/angular",
+    author: "Angular",
+    num_comments: 2,
+    points: 5,
+    objectID: 1
   }
 ];
+
+// const isSearched = searchTerm => item =>
+//   item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+const isSearched = function higherOrderFunc(searchTerm) {
+  return function returnedFunction(item) {
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      list: list
+      list: list,
+      searchTerm: ""
     };
+
+    this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+  }
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
   }
   onDismiss(id) {
     const isNotId = function isNotId(item) {
@@ -41,7 +65,14 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.list.map(item => {
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        {/*
+        returned function from isSearched has access to the item object
+        because IT IS THE FUNCTION that is passed to the filter function.
+         */}
+        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
           return (
             <div key="item.objectID">
               <span>
