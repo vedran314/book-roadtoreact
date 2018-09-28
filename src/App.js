@@ -29,67 +29,72 @@ const list = [
   }
 ];
 
-// const isSearched = searchTerm => item =>
-//   item.title.toLowerCase().includes(searchTerm.toLowerCase());
-
-const isSearched = function higherOrderFunc(searchTerm) {
-  return function returnedFunction(item) {
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-  };
+const largeColumn = {
+  width: "40%"
+};
+const midColumn = {
+  width: "30%"
+};
+const smallColumn = {
+  width: "10%"
 };
 
-class Button extends Component {
-  render() {
-    const { onClick, children, className = "" } = this.props;
-    return (
-      <button onClick={onClick} className={className} type="button">
-        {children}
-      </button>
-    );
-  }
-}
+const isSearched = searchTerm => item =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-class Search extends Component {
-  render() {
-    const { value, onChange, children } = this.props;
-    return (
-      <form>
-        {children}
-        <input type="text" value={value} onChange={onChange} />
-      </form>
-    );
-  }
-}
+// const isSearched = function higherOrderFunc(searchTerm) {
+//   return function returnedFunction(item) {
+//     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+//   };
+// };
 
-class Table extends Component {
-  render() {
-    const { list, pattern, onDismiss } = this.props;
-    return (
-      <div>
-        {list.filter(isSearched(pattern)).map(item => {
-          return (
-            <div key="item.objectID">
-              <span>
-                <a href={item.url}>{item.title}</a>
-              </span>
-              <span>{item.author}</span>
-              <span>{item.num_comments}</span>
-              <span>{item.points}</span>
-              <span>
-                <Button
-                  className="item-dismiss"
-                  onClick={() => onDismiss(item.objectID)}
-                >
-                  Dismiss
-                </Button>
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-}
+const Button = ({ onClick, className = "", children }) => {
+  return (
+    <button onClick={onClick} className={className} type="button">
+      {children}
+    </button>
+  );
+};
+
+const Search = ({ value, onChange, children }) => {
+  return (
+    <form>
+      {children}
+      <input type="text" value={value} onChange={onChange} />
+    </form>
+  );
+};
+
+const Table = ({ list, pattern, onDismiss }) => {
+  return (
+    <div>
+      {list.filter(isSearched(pattern)).map(item => {
+        return (
+          <div key="item.objectID" className="table-row">
+            <span style={largeColumn}>
+              <a href={item.url}>{item.title}</a>
+            </span>
+
+            <span style={midColumn}>{item.author}</span>
+
+            <span style={smallColumn}>{item.num_comments}</span>
+
+            <span style={smallColumn}>{item.points}</span>
+
+            <span syle={smallColumn}>
+              <Button
+                onClick={() => onDismiss(item.objectID)}
+                className="button-inline"
+              >
+                Dismiss
+              </Button>
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 class App extends Component {
   constructor(props) {
@@ -118,11 +123,13 @@ class App extends Component {
   render() {
     const { searchTerm, list } = this.state;
     return (
-      <div className="App">
-        <Search value={searchTerm} onChange={this.onSearchChange}>
-          {/* now the {children} will render search text */}
-          Search Me
-        </Search>
+      <div className="page">
+        <div className="interactions">
+          <Search value={searchTerm} onChange={this.onSearchChange}>
+            {/* now the {children} will render search text */}
+            Search
+          </Search>
+        </div>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
       </div>
     );
